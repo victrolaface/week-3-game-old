@@ -7,9 +7,7 @@
   </head>
   <body>
     <header>
-        <div id="header_title">
-            <div id="header_subtitle"></div>
-        </div>
+        <div id="header_title"></div>
     </header>    
     <main>
         <div class="container">
@@ -49,22 +47,46 @@
             var s_random_word = f_choose_random(a_words);
             var a_word = s_random_word.split("");
             var s_hidden_word = f_hide_word(a_word);
-     
+            var a_guessed_letters = []; //initialize guessed letters array
+
             if (b_show_intro) {
                 //set the intro text to be visible
-                $("#intro").append(o_instructions.intro_text);
+                $("#intro").html(o_instructions.intro_text);
             };
 
-            //function to hide the press any key text
-            document.onkeydown = function f_hide_intro() {
+            //insert onto page            
+            $("#header_title").html("<h1>" + o_instructions.title_text + "</h1>" + o_instructions.subtitle_text); //header title
+            $("#wins").html(o_instructions.wins_text + "<br />"); //wins text, number
+            if (i_wins > 0) { $("#wins").html(i_wins); };
+            $("#hidden_word").html(o_instructions.current_word_text + "<br />" + s_hidden_word);
+            $("#guesses_remaining").html(o_instructions.guesses_remaining_text + "<br />" + i_guesses); //guesses text, number
+            $("#guesses_letters").html(o_instructions.guesses_text + "<br />" + a_guessed_letters); //guessed letter text, number
+
+            //function hide the press any key text
+            document.onkeypress = function f_keypress(word_array, hidden_word) {
                 $("#intro").remove();
-                b_show_intro = false;
+                b_show_intro = false; //hides intro text on first keypress
+                
+                var key = String.fromCharCode(event.keyCode); //get keycode
+                if (/[a-zA-Z0-9-_]/.test(key)) { //if keycode in alphabet
+                    //if match, replace underscore w/matching letter
+                    console.log("a-z,A-Z,0-9,-_");
+                        //if hidden word is fully matched add +1 to win number
+                            //generate new hidden word
+                    //else
+                        //put wrong letter into letters already guessed div
+                        // -1 to guesses remaining
+                        //if guesses remaining < 1 
+                            //lose game
+                            //generate new hidden word
+                } else {}; //else - do nothing
             };
 
             //function choose random word
             function f_choose_random(word) {
                 return word[Math.floor(Math.random() * word.length)];
             };
+            
             //function hide random word
             function f_hide_word(word_array) { 
                 var hidden_word = "";
@@ -75,15 +97,7 @@
                     };
                 };
                 return hidden_word;
-            };
-
-            //insert into page            
-            $("#header_title")append("<h1>" + o_instructions.title_text + "</h1>"); //header title
-            $("#header_subtitle")append(o_instructions.subtitle_text); //header subtitle
-            $("#wins")append(o_instructions.wins_text + "<br />" + i_wins); //wins text, number
-            $("#guesses_remaining")append(o_instructions.guesses_remaining_text + "<br />" + i_guesses); //guesses text, number
-            $("#guesses_letters")append(o_instructions.guesses_text + "<br />" + s_hidden_word); //guessed letter text, number
-            
+            };                         
         });
     </script>
   </body>
