@@ -29,7 +29,7 @@
     <script type="text/javascript">
 
     $(document).ready(function() {
-
+        
         //bank of words to use
         var a_words = ["lil bub", "brother cream", "grumpy cat", "henri", "longcat", "limecat", "nyan cat", "happy cat", "business cat", "tacgnol", "ceiling cat"];
         var i_wins = 0; //game start, initialize wins to 0
