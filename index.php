@@ -3,12 +3,32 @@
   <head>
     <meta charset="UTF-8">
     <title>My First Object</title>
+      <script src="https://code.jquery.com/jquery-2.2.3.js" integrity="sha256-laXWtGydpwqJ8JA+X9x2miwmaiKhn8tVmOVEigRNtP4=" crossorigin="anonymous"></script>
   </head>
   <body>
-    <div id="intro_text"></div>
+    <header>
+        <div id="header_title"></div>
+    </header>    
+    <main>
+        <div class="container">
+            <div class="row">
+                <div class="six columns" id="game-image">
+                    <img src="" alt="" class="" />
+                </div>
+                <div class="six columns">
+                    <div id="intro"></div>
+                    <div id="wins"></div>
+                    <div id="hidden_word"></div>
+                    <div id="guesses_remaining"></div>
+                    <div id="guesses_letters"></div>
+                </div>
+            </div>
+        </div>    
+    </main>
+    <footer></footer>
     <script>
       //bank of words to use
-      var a_words = ["longcat", "limecat", "nyan cat", "happy cat", "business cat", "tacgnol", "ceiling cat"];
+      var a_words = ["lil bub", "brother cream", "grumpy cat", "henri", "longcat", "limecat", "nyan cat", "happy cat", "business cat", "tacgnol", "ceiling cat"];
       var i_wins = 0; //game start, initialize wins to 0
       var i_guesses = 8; //game start, intialize user guesses to 8
       var o_instructions = {
@@ -42,15 +62,13 @@
       };
 
       //function hide random word
-      
       function f_hide_word(word_array) { 
-        var hidden_word;
+        var hidden_word = "";
 
         for (i = 0; i < word_array.length; i++) {
-          if (word_array[i] = " ") {
-            hidden_word = "  " + hidden_word;
-          } else {
-            hidden_word = "_ " + hidden_word;
+          hidden_word = hidden_word + "_ ";
+          if (word_array[i] === " ") {
+              hidden_word = hidden_word + "  ";
           };
         };
 
