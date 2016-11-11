@@ -28,7 +28,6 @@
     <footer></footer>
     <script type="text/javascript">
         $(document).ready(function() {
-
             //bank of words to use
             var a_words = ["lil bub", "brother cream", "grumpy cat", "henri", "longcat", "limecat", "nyan cat", "happy cat", "business cat", "tacgnol", "ceiling cat"];
             //instructions text
@@ -41,102 +40,119 @@
                 guesses_remaining_text: "Number of Guesses Remaining",
                 guesses_text: "Letters Already Guessed"
             };
-            var b_show_intro = true; //game start, initialize the intro text to be visible
-            if (b_show_intro) { $("#intro").html(o_instructions.intro_text); };
-            if (b_show_intro === false) { $("#intro").remove(); };
             var i_wins = 0; //game start, initialize wins to 0
             var i_guesses = 8; //game start, intialize user guesses to 8
+            var b_no_intro = false; //init game intro screen
             var s_random_word = f_choose_random(a_words);
-            var a_word = s_random_word.split("");
-
-            //insert onto page            
-            $("#header_title").html("<h1>" + o_instructions.title_text + "</h1>" + o_instructions.subtitle_text); //header title
-
-            //on key press
-            document.onkeypress = function f_keypress(a_word) {
-                //set vars
-                b_show_intro = false; //hides intro text on first f_keypress
-                
-                var a_hidden_word = f_hidden_word_array(a_word);            
-                //function take word array's values into hidden word array
-                function f_hidden_word_array(word_array) {
-                    var hidden_word_array = []; //init hidden word array
-                    for (i = 0; i < word_array.length; i++) {
-                        if (word_array[i] === " ") {
-                            hidden_word_array[i] = "&nbsp;&nbsp;"
-                        } else {
-                            hidden_word_array[i] = "_ ";
-                        };
-                    };
-                    return hidden_word_array;
-                };
-
-                var s_hidden_word_output = f_hidden_word_output(a_hidden_word);
-                //function take hidden word array, output
-                function f_hidden_word_output(hidden_word_array) {
-
-                    var hidden_word_output; //init output to be blank string
-                    
-                    for (i = 0; i < hidden_word_array.length; i++) {
-                        hidden_word_output = hidden_word_output + hidden_word_array[i]; // 
-                    };
-
-                    return hidden_word_output;             
-                };
-
-                var a_guessed_letters = []; //initialize guessed letters array
-                
-                if (i_wins > 0) { $("#wins").html(i_wins); };
-                $("#hidden_word").html(o_instructions.current_word_text + "<br />" + s_hidden_word_output);
-                $("#guesses_remaining").html(o_instructions.guesses_remaining_text + "<br />" + i_guesses); //guesses text, number
-                $("#guesses_letters").html(o_instructions.guesses_text + "<br />" + a_guessed_letters); //guessed letter text, number
-
-                var key = String.fromCharCode(event.keyCode); //get keycode
-                
-                if (/[a-zA-Z0-9]/.test(key)) { //if keycode in alphabet
-                    //if match
-                    for (i = 0; i < a_word.length; i++) {
-                        if (key === a_word[i]) {
-                            //replace underscore w/matching letter
-                            a_hidden_word[i] = key;
-                        };
-                    };
-                    
-                        //if hidden word is fully matched add +1 to win number
-                            //generate new hidden word
-                    //else
-                        //put wrong letter into letters already guessed div
-                        // -1 to guesses remaining
-                        //if guesses remaining < 1 
-                            //lose game
-                            //generate new hidden word
-                } else {}; //else - do nothing
-
-                //console.log
-                console.log("random word: ", s_random_word);
-                console.log("word array: ", a_word);
-                console.log("hidden word array: ", a_hidden_word);
-                console.log("hidden word output: ", s_hidden_word_output);
-                
-                //function hide random word
-                /*
-                function f_hide_word(word_array) { 
-                    var hidden_word = "";
-                    for (i = 0; i < word_array.length; i++) {
-                        hidden_word = hidden_word + "_ ";
-                        if (word_array[i] === " ") {
-                            hidden_word = hidden_word + "  ";
-                        };
-                    };
-                    return hidden_word;
-                };*/
-            };
             
             //function choose random word
             function f_choose_random(word) {
                 return word[Math.floor(Math.random() * word.length)];
-            };                     
-        });
+            };
+
+            var a_word = s_random_word.split("");
+            var a_hidden_word = f_hidden_word_array (a_word);
+
+            //create hidden word array "_ _ _   _ _ _"
+            function f_hidden_word_array (word_array) {
+                var hidden_word_array = [];
+                for (i = 0; i < word_array.length; i++) {
+                    if (word_array[i] === " ") {
+                        hidden_word_array[i] = "&nbsp;&nbsp;";
+                    } else {
+                        hidden_word_array[i] = "_ ";
+                    };    
+                };
+                return hidden_word_array;
+            };
+
+            var a_hidden_word_game = []; //this array will update with every correct key press
+            //copy contents of a_hidden_word to a_hidden_word_game
+            for (i=0; i<a_hidden_word.length; i++) {
+                a_hidden_word_game[i] = a_hidden_word[i];
+            };
+
+            //insert onto page            
+            $("#header_title").html("<h1>" + o_instructions.title_text + "</h1>" + o_instructions.subtitle_text); //header title
+            $("#intro").html(o_instructions.intro_text); //press any key text
+
+            if (b_no_intro === false) {
+                document.onkeypress = function f_no_intro() {
+                    $("#intro").remove(); //remove intro text
+                    $("#hidden_word").html(o_instructions.current_word_text + "<br />");
+                    $("#guesses_remaining").html(o_instructions.guesses_remaining_text + "<br />" + i_guesses); //guesses text, number
+                    $("#guesses_letters").html(o_instructions.guesses_text + "<br />"); //guessed letter text, number
+                    b_no_intro = true; //precursor to start game
+                };
+            };
+
+            var a_guesses = []; //init guesses array
+
+            if (b_no_intro === true) {
+
+                var b_hidden_word_init = true;
+                
+                if (b_hidden_word_init === true) {
+                    
+                    var s_hidden_word_init = f_hidden_word_init();
+                    
+                    //output initial hidden word string
+                    function f_hidden_word_init() {
+                        var s_hidden_word_init = "";
+                        for (i=0; i<a_word.length; i++) {
+                            s_hidden_word_init = s_hidden_word_init + a_hidden_word[i];
+                        };
+                        return s_hidden_word_init;
+                    };
+
+                    //output init hidden word
+                    b_hidden_word_init = false; //set init hidden word output to false
+                };
+
+                $("#hidden_word").append(s_hidden_word_init); //add init hidden word _ _ _ under current word:
+
+                if (b_hidden_word_init === false) {
+                    document.onkeypress = function f_game() {             
+                        var key = String.fromCharCode(event.keyCode); //get keycode
+                        if (/[a-zA-Z0-9]/.test(key)) { //if keycode in alphabet
+                            //if match
+                            for (i = 0; i < a_word.length; i++) {
+                                if (key === a_word[i]) {
+                                    //replace underscore w/matching letter
+                                    a_hidden_word_game[i] = key.toUpperCase();
+                                } else {
+                                    i_guesses = i_guesses - 1; //take away a guess
+                                    a_guesses.push(key.toUpperCase()); //add missed char to guesses array
+                                };
+                            };
+                        };
+                    };
+                };
+            };                 
+        });    
+//function take hidden word array, output
+/*
+function f_hidden_word_output(hidden_word_array) {
+
+    var hidden_word_output = ""; //init output to be blank string
+    
+    for (i = 0; i < hidden_word_array.length; i++) {
+        hidden_word_output = hidden_word_output + hidden_word_array[i];
+    };
+
+    return hidden_word_output;             
+};
+*/
+/*var a_guessed_letters = []; //initialize guessed letters array
+if (i_wins > 0) { $("#wins").html(o_instructions.wins_text + "<br />" + i_wins); };
+*/
+/*
+} else {
+    document.onkeypress = function f_set_no_intro_true() {
+        b_no_intro = true;
+        $("#intro").remove(); //remove press any key div
+    };
+};*/
     </script>
   </body>
 </html>
