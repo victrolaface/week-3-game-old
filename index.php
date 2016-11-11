@@ -77,7 +77,7 @@
             $("#header_title").html("<h1>" + o_instructions.title_text + "</h1>" + o_instructions.subtitle_text); //header title
             $("#intro").html(o_instructions.intro_text); //press any key text
 
-            var b_no_intro = false; //init game intro screen
+            var b_intro = true; //init game intro screen
             var b_hidden_word_init = true;
             var s_hidden_word_init = ""; //init hidden word output _ _ _
 
@@ -94,8 +94,8 @@
                 };
                 return hidden_word_init;
             };
-            console.log("4");
-            if (b_no_intro !== true) {
+            
+            if (b_intro) {
                 document.onkeypress = function f_no_intro() {
                     console.log("5");
                     $("#intro").remove(); //remove intro text
@@ -103,16 +103,15 @@
                     $("#guesses_remaining").html(o_instructions.guesses_remaining_text + "<br />" + i_guesses); //guesses text, number
                     $("#guesses_letters").html(o_instructions.guesses_text + "<br />"); //guessed letter text, number
                 };
-                console.log("6");
-                b_no_intro = true; //precursor to start game
-                console.log("7");
+                b_intro = false; //precursor to start game
             };
 
             console.log("8");
             var s_hidden_word = "";
             var a_guesses = [];
+            var b_no_intro_keypress = true;
             
-            if (b_no_intro) {
+            if (b_intro !== true) {
                 document.onkeypress = function f_game() {
                     console.log("9")
                     $("#hidden_word").html(o_instructions.current_word_text + "<br />" + s_hidden_word);
